@@ -14,12 +14,28 @@ def readlines_reverse(qfile, exclude=''):
     while position >= 0:
         qfile.seek(position)
         next_char = qfile.read(1)
-        if next_char == "\n" and line and line[-1] == '[':
-            if exclude in line[::-1]:
-                line = ''
-            else:
-                yield line[::-1]
-                line = ''
+
+        # original
+        # if next_char == "\n" and line and line[-1] == '[':
+        #     if exclude in line[::-1]:
+        #         line = ''
+        #     else:
+        #         yield line[::-1]
+        #         line = ''
+        # else:
+        #     line += next_char
+
+        # modified
+        if next_char == '\n' and line:
+            # pattern = "; |\[INFO\] |\[DEBUG\] |\[WARNING\] |\[ERROR\] |\[CRITICAL\] "
+            patterns = [']OFNI[', ']GUBED[', ']GNINRAW[', ']RORRE[', ']LACITIRC[']
+
+            if any([line.endswith(p) for p in patterns]):
+                if exclude in line[::-1]:
+                    line = ''
+                else:
+                    yield line[::-1]
+                    line = ''
         else:
             line += next_char
         position -= 1

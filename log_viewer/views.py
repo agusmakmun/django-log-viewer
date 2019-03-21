@@ -59,9 +59,9 @@ class LogViewerView(TemplateView):
                 tmp_names = list(filter(lambda x: x in settings.LOG_VIEWER_FILES, tmp_names))
             else:
                 tmp_names = [name for name in tmp_names if (name.split('.')[-1]) == 'log']
+
             file_names += tmp_names
-            file_display += [('%s/%s' % (
-                root[len_logs_dir:], name))[1:] for name in tmp_names]
+            file_display += [('%s/%s' % (root[len_logs_dir:], name))[1:] for name in tmp_names]
             file_urls += list(map(lambda x: '%s/%s' % (root, x), tmp_names))
 
         for i, element in enumerate(file_display):
@@ -74,7 +74,7 @@ class LogViewerView(TemplateView):
 
         if file_name:
             try:
-                with open(os.path.join(settings.LOG_VIEWER_FILES_DIR, file_name)) as file:
+                with open(os.path.join(settings.LOG_VIEWER_FILES_DIR, file_name), encoding='utf8', errors='ignore') as file:
                     next_lines = list(islice(readlines_reverse(file, exclude='Not Found'),
                                              (page - 1) * lines_per_page,
                                              page * lines_per_page))
@@ -86,7 +86,9 @@ class LogViewerView(TemplateView):
                     context['logs'] = next_lines
                     context['current_file'] = current_file
                     context['file'] = file
-            except (IOError, ValueError):
+
+            except Exception as error:
+                print(error)
                 pass
         else:
             context['last'] = True
