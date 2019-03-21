@@ -1,0 +1,61 @@
+{% extends "admin/base_site.html" %}
+{% load admin_static i18n %}
+
+{% block breadcrumbs %}
+  <div class="breadcrumbs">
+    <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+    &rsaquo;
+    <a href="{% url 'logfile-view' %}">{% trans 'Log Viewer' %}</a>
+  </div>
+{% endblock %}
+
+{% block extrastyle %}
+  <link rel="stylesheet" type="text/css" href="{% static 'admin/css/changelists.css' %}">
+  <style>.django__log__viewer .results {margin-right: 280px;width: auto;} .django__log__viewer .results ol {margin: 0;padding-left: 1.5em}</style>
+
+  {% if custom_style_file %}
+    <link type="text/css" href="{{ custom_style_file }}" rel="stylesheet">
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  <div class="django__log__viewer">
+    {% if custom_file_list_title %}
+      <b>{{ custom_file_list_title }}</b>
+    {% endif %}
+
+    <div id="content-main">
+      <div class="module filtered" id="changelist">
+        <div id="changelist-filter">
+          <h2>{% trans 'Log Files' %}</h2>
+          {% for files in log_files %}
+            <ul>
+              {% for file_name, xtra in files.items %}
+                <li class="{% if request.resolver_match.kwargs.file_name == file_name %}selected{% endif %}">
+                  <a href="{% url 'logfile-view' file_name 1 %}">{{ xtra.display }}</a>
+                </li>
+              {% endfor %}
+            </ul>
+          {% endfor %}
+        </div>
+        <form id="changelist-form">
+          <div class="results">
+            <ol>
+              {% for line in logs %}
+              <li>
+                <pre>{{ line }}</pre>
+              </li>
+              {% empty %}
+                <div style="margin-left:-1em">{% trans 'No anything to show !' %}</div>
+              {% endfor %}
+            </ol>
+
+            {% if not last %}
+              <a href="{% url 'logfile-view' request.resolver_match.kwargs.file_name next_page %}"> {% trans 'More' %}...</a>
+            {% endif %}
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock%}
