@@ -15,12 +15,16 @@ This project was modified from: https://bitbucket.org/inkalabsinc/django-log-vie
 Quick start
 -----------
 
-1. Include the log viewer URLconf in your project urls.py like this::
+1. Include the log viewer URLconf in your project ``urls.py`` like this
+
+::
 
     pip install django-log-viewer
 
 
-2. Add ``"log_viewer"`` to your ``INSTALLED_APPS`` setting like this::
+2. Add ``"log_viewer"`` to your ``INSTALLED_APPS`` setting like this
+
+::
 
     INSTALLED_APPS = [
         ...
@@ -28,12 +32,16 @@ Quick start
     ]
 
 
-3. Include the log viewer URLconf in your project urls.py like this::
+3. Include the log viewer URLconf in your project urls.py like this
+
+::
 
     path('admin/log_viewer/', include('log_viewer.urls')),
 
 
-4. In your settings file create the following value::
+4. In your settings file create the following value
+
+::
 
     LOG_VIEWER_FILES = ['logfile1', 'logfile2', ...]
     LOG_VIEWER_FILES_DIR = os.path.join(BASE_DIR, '../logs')
@@ -46,6 +54,8 @@ Quick start
 
 
 5. Create/register the logging
+
+::
 
     import logging
     logger = logging.getLogger('my_handler')  # eg: log_viewer_demo/log_viewer_demo/logger.py
