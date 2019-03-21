@@ -3,7 +3,7 @@
 
 from setuptools import (setup, find_packages)
 
-__version__ = '1.1.0'
+__version__ = '1.0.0'
 
 setup(
     name='django-log-viewer',
