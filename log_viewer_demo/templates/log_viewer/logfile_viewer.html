@@ -11,7 +11,11 @@
 
 {% block extrastyle %}
   <link rel="stylesheet" type="text/css" href="{% static 'admin/css/changelists.css' %}">
-  <style>.django__log__viewer .results {margin-right: 280px;width: auto;} .django__log__viewer .results ol {margin: 0;padding-left: 1.5em}</style>
+  <style>
+  .django__log__viewer .results {margin-right: 280px;width: auto;}
+  .django__log__viewer .results ol {margin: 0;padding-left: 1.5em}
+  .django__log__viewer .footer-action {margin: 1em 0}
+  </style>
 
   {% if custom_style_file %}
     <link type="text/css" href="{{ custom_style_file }}" rel="stylesheet">
@@ -49,11 +53,13 @@
                 <div style="margin-left:-1em">{% trans 'No anything to show !' %}</div>
               {% endfor %}
             </ol>
-
-            {% if not last %}
-              <a href="{% url 'logfile-view' request.resolver_match.kwargs.file_name next_page %}"> {% trans 'More' %}...</a>
-            {% endif %}
           </div>
+
+          {% if not last %}
+            <div class="footer-action">
+              <a href="{% url 'logfile-view' request.resolver_match.kwargs.file_name next_page %}"> {% trans 'Load more' %}...</a>
+            </div>
+          {% endif %}
         </form>
       </div>
     </div>
