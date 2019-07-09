@@ -5,21 +5,23 @@
   <div class="breadcrumbs">
     <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
     &rsaquo;
-    <a href="{% url 'logfile-view' %}">{% trans 'Log Viewer' %}</a>
+    <a href="{% url 'log_viewer:log_file_view' %}">{% trans 'Log Viewer' %}</a>
   </div>
 {% endblock %}
 
 {% block extrastyle %}
   <link rel="stylesheet" type="text/css" href="{% static 'admin/css/changelists.css' %}">
-  <style>
-  .django__log__viewer .results {margin-right: 280px;width: auto;}
-  .django__log__viewer .results ol {margin: 0;padding-left: 1.5em}
-  .django__log__viewer .footer-action {margin: 1em 0}
-  </style>
+  <link rel="stylesheet" type="text/css" href="{% static 'log_viewer/css/jquery.dataTables.min.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'log_viewer/css/log-viewer.css' %}">
 
   {% if custom_style_file %}
     <link type="text/css" href="{{ custom_style_file }}" rel="stylesheet">
   {% endif %}
+{% endblock %}
+
+{% block extrahead %}
+  <script src="{% static 'log_viewer/js/jquery.min.js' %}"></script>
+  <script src="{% static 'log_viewer/js/jquery.dataTables.min.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -32,36 +34,80 @@
       <div class="module filtered" id="changelist">
         <div id="changelist-filter">
           <h2>{% trans 'Log Files' %}</h2>
-          {% for files in log_files %}
-            <ul>
-              {% for file_name, xtra in files.items %}
-                <li class="{% if request.resolver_match.kwargs.file_name == file_name %}selected{% endif %}">
-                  <a href="{% url 'logfile-view' file_name 1 %}">{{ xtra.display }}</a>
-                </li>
-              {% endfor %}
-            </ul>
-          {% endfor %}
+          <div id="log-files-list">
+          </div>
         </div>
         <form id="changelist-form">
           <div class="results">
-            <ol>
-              {% for line in logs %}
-              <li>
-                <pre>{{ line }}</pre>
-              </li>
-              {% empty %}
-                <div style="margin-left:-1em">{% trans 'No anything to show !' %}</div>
-              {% endfor %}
-            </ol>
+            <table id="log-entries" class="display" style="width:100%">
+              <thead>
+                <tr><th scope="col">{% trans 'Log entries' %}</th></tr>
+              </thead>
+            </table>
           </div>
-
-          {% if not last %}
-            <div class="footer-action">
-              <a href="{% url 'logfile-view' request.resolver_match.kwargs.file_name next_page %}"> {% trans 'Load more' %}...</a>
-            </div>
-          {% endif %}
         </form>
       </div>
     </div>
   </div>
+
+  <script>
+    function loadDataTableTrigger(table_name, url_json) {
+      $(table_name).DataTable({
+        pageLength: '{{ page_length }}',
+        ajax: function (data, callback, settings) {
+          $.ajax({
+            type: 'get',
+            url: url_json,
+            success:function(response){
+                const new_logs = [];
+                var next_page = response.next_page || 1;
+
+                response.logs.forEach(function(text){
+                  new_logs.push([text])
+                });
+
+                callback({
+                  data: new_logs,
+                  recordsTotal: next_page,
+                  recordsFiltered: next_page
+                });
+            }
+          });
+        }
+      });
+    }
+
+    function loadDataTable(url_json) {
+      var table_name ='table#log-entries';
+      if (!$.fn.dataTable.isDataTable(table_name)) {
+        loadDataTableTrigger(table_name, url_json);
+      }else {
+        table_dt = $(table_name).DataTable();
+        table_dt.destroy();
+        loadDataTableTrigger(table_name, url_json);
+      }
+    }
+
+    $(document).ready(function() {
+        // just blank entry to get the `log_files`
+        var url_json = "{% url 'log_viewer:log_json_view' xxxxx %}";
+        $.getJSON(url_json, function(result){
+            result.log_files.forEach(function(log) {
+                const keys = Object.keys(log);
+                Object.entries(log).forEach(([file_name, xtra]) => {
+                    // console.log(file_name);
+                    // console.log(xtra);
+                    var html = '<ul><li><a class="btn-load-json-log" href="javascript:;" '+
+                               'data-href="'+url_json+file_name+'">'+xtra.display+'</a></li></ul>'
+                    $('div#log-files-list').append(html);
+                });
+            });
+        });
+    });
+
+    $(document).on('click', '.btn-load-json-log', function(){
+        // console.log(this);
+        loadDataTable($(this).data('href'));
+    });
+  </script>
 {% endblock%}

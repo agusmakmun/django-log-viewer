@@ -9,7 +9,7 @@ This project was modified from: https://bitbucket.org/inkalabsinc/django-log-vie
 
 -----------------
 
-.. image:: https://i.imgur.com/XXlsszz.png
+.. image:: https://i.imgur.com/sGRlW9b.png
 
 
 Quick start
@@ -45,7 +45,8 @@ Quick start
 
     LOG_VIEWER_FILES = ['logfile1', 'logfile2', ...]
     LOG_VIEWER_FILES_DIR = os.path.join(BASE_DIR, '../logs')
-    LOG_VIEWER_ITEMS_PER_PAGE = 50
+    LOG_VIEWER_MAX_READ_LINES = 1000  # total log lines will be read
+    LOG_VIEWER_PAGE_LENGTH = 25       # total log lines per-page
 
     # Optionally you can set the next variables in order to customize the admin:
 

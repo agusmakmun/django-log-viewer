@@ -1,0 +1,16 @@
+/*
+django-log-viwer 1.0.3
+https://github.com/agusmakmun/django-log-viewer
+*/
+
+.django__log__viewer .results {
+  margin-right: 280px;
+  width: auto;
+}
+.django__log__viewer .results ol {
+  margin: 0;
+  padding-left: 1.5em
+}
+.django__log__viewer .footer-action {
+  margin: 1em 0
+}

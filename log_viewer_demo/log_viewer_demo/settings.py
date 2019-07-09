@@ -32,7 +32,8 @@ LOGGING = LOGGING
 
 # Django log viewer
 LOG_VIEWER_FILES_DIR = 'logs'
-LOG_VIEWER_ITEMS_PER_PAGE = 10
+LOG_VIEWER_PAGE_LENGTH = 25
+LOG_VIEWER_MAX_READ_LINES = 1000
 
 # Application definition
 
@@ -126,3 +127,4 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')

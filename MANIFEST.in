@@ -1,0 +1,4 @@
+include LICENSE
+include README.rst
+recursive-include log_viewer/templates *
+recursive-include log_viewer/static *

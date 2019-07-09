@@ -3,36 +3,24 @@ from __future__ import unicode_literals
 
 import os
 from itertools import islice
+from django.http import HttpResponse
 from django.views.generic import TemplateView
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.utils import (quote, unquote)
 from django.utils.decorators import method_decorator
 
 from log_viewer import settings
-from log_viewer.utils import readlines_reverse
+from log_viewer.utils import (readlines_reverse, JSONResponseMixin)
 
 
-class LogViewerView(TemplateView):
-    """
-    LogViewerView class
-
-    :cvar template_name: Name of the HTML template used to render the log files
-
-    """
-    template_name = "log_viewer/logfile_viewer.html"
+class LogJsonView(JSONResponseMixin, TemplateView):
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
-        return super(LogViewerView, self).dispatch(*args, **kwargs)
+        return super(LogJsonView, self).dispatch(*args, **kwargs)
 
-    def get_context_data(self, file_name=None, page=1, **kwargs):
-        """
-        Read and return log files to be showed in admin page
-
-        :param file_name: log file name
-        :param page: log viewer page
-        """
-        context = super(LogViewerView, self).get_context_data(**kwargs)
+    def get_log_json(self, file_name=None, page=1):
+        context = {}
 
         # Clean the `file_name` to avoid relative paths.
         file_name = unquote(file_name).replace('/..', '').replace('..', '')
@@ -42,9 +30,7 @@ class LogViewerView(TemplateView):
         page = int(page)
         current_file = file_name
 
-        lines_per_page = settings.LOG_VIEWER_ITEMS_PER_PAGE
-        context['custom_file_list_title'] = settings.LOG_VIEWER_FILE_LIST_TITLE
-        context['custom_style_file'] = settings.LOG_VIEWER_FILE_LIST_STYLES
+        lines_per_page = settings.LOG_VIEWER_MAX_READ_LINES
         context['original_file_name'] = file_name
         context['next_page'] = page + 1
         context['log_files'] = []
@@ -96,7 +82,49 @@ class LogViewerView(TemplateView):
         if len(context['log_files']) > 0:
             context['log_files'] = sorted(context['log_files'],
                                           key=lambda x: sorted(x.items()))
+
+        return context
+
+    def render_to_response(self, context, **response_kwargs):
+        log_json = self.get_log_json(context.get('file_name'),
+                                     context.get('page', 1))
+
+        if 'file' in log_json:
+            log_json['file'] = log_json['file'].name
+
+        if 'view' in context:
+            del context['view']
+
+        context.update(**log_json)
+        return self.render_to_json_response(context, **response_kwargs)
+
+
+class LogViewerView(TemplateView):
+    """
+    LogViewerView class
+
+    :cvar template_name: Name of the HTML template used to render the log files
+
+    """
+    template_name = "log_viewer/logfile_viewer.html"
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(LogViewerView, self).dispatch(*args, **kwargs)
+
+    def get_context_data(self, file_name=None, page=1, **kwargs):
+        """
+        Read and return log files to be showed in admin page
+
+        :param file_name: log file name
+        :param page: log viewer page
+        """
+        context = super(LogViewerView, self).get_context_data(**kwargs)
+        context['custom_file_list_title'] = settings.LOG_VIEWER_FILE_LIST_TITLE
+        context['custom_style_file'] = settings.LOG_VIEWER_FILE_LIST_STYLES
+        context['page_length'] = settings.LOG_VIEWER_PAGE_LENGTH
         return context
 
 
+log_json = LogJsonView.as_view()
 log_viewer = LogViewerView.as_view()
