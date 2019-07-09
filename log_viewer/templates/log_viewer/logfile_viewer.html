@@ -41,8 +41,14 @@
           <div class="results">
             <table id="log-entries" class="display" style="width:100%">
               <thead>
-                <tr><th scope="col">{% trans 'Log entries' %}</th></tr>
+                <tr>
+                  <th scope="col">{% trans 'No.' %}</th>
+                  <th scope="col">{% trans 'Log entries' %}</th>
+                </tr>
               </thead>
+              <tbody>
+                <tr><td colspan="2">{% trans 'No entries!' %}</td></tr>
+              </tbody>
             </table>
           </div>
         </form>
@@ -54,6 +60,7 @@
     function loadDataTableTrigger(table_name, url_json) {
       $(table_name).DataTable({
         pageLength: '{{ page_length }}',
+        columns: [{data: 0}, {data: 1}],
         ajax: function (data, callback, settings) {
           $.ajax({
             type: 'get',
@@ -62,8 +69,8 @@
                 const new_logs = [];
                 var next_page = response.next_page || 1;
 
-                response.logs.forEach(function(text){
-                  new_logs.push([text])
+                response.logs.forEach(function(text, numb, logs){
+                  new_logs.push([numb, text])
                 });
 
                 callback({

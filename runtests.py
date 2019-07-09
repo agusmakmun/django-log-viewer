@@ -25,8 +25,7 @@ settings.configure(
     TEMPLATES=[{
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(BASE_DIR, 'django-markdown-editor/martor/templates'),
-            os.path.join(BASE_DIR, 'django-markdown-editor/martor/tests/templates'),
+            os.path.join(BASE_DIR, 'django-log-viewer/log_viewer/templates'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {
