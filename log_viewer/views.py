@@ -5,7 +5,7 @@ import os
 from itertools import islice
 from django.http import HttpResponse
 from django.views.generic import TemplateView
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import (login_required, user_passes_test)
 from django.contrib.admin.utils import (quote, unquote)
 from django.utils.decorators import method_decorator
 
@@ -16,6 +16,7 @@ from log_viewer.utils import (readlines_reverse, JSONResponseMixin)
 class LogJsonView(JSONResponseMixin, TemplateView):
 
     @method_decorator(login_required)
+    @method_decorator(user_passes_test(lambda u: u.is_superuser))
     def dispatch(self, *args, **kwargs):
         return super(LogJsonView, self).dispatch(*args, **kwargs)
 
@@ -60,7 +61,8 @@ class LogJsonView(JSONResponseMixin, TemplateView):
 
         if file_name:
             try:
-                with open(os.path.join(settings.LOG_VIEWER_FILES_DIR, file_name), encoding='utf8', errors='ignore') as file:
+                file_log = os.path.join(settings.LOG_VIEWER_FILES_DIR, file_name)
+                with open(file_log, encoding='utf8', errors='ignore') as file:
                     next_lines = list(islice(readlines_reverse(file, exclude='Not Found'),
                                              (page - 1) * lines_per_page,
                                              page * lines_per_page))
@@ -109,6 +111,7 @@ class LogViewerView(TemplateView):
     template_name = "log_viewer/logfile_viewer.html"
 
     @method_decorator(login_required)
+    @method_decorator(user_passes_test(lambda u: u.is_superuser))
     def dispatch(self, *args, **kwargs):
         return super(LogViewerView, self).dispatch(*args, **kwargs)
 

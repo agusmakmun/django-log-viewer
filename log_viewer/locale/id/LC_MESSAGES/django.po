@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-07-09 19:54+0700\n"
+"POT-Creation-Date: 2019-07-11 05:23+0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,21 +26,18 @@ msgstr "Beranda"
 msgid "Log Viewer"
 msgstr "Penampil Log"
 
-#: templates/log_viewer/logfile_viewer.html:36
+#: templates/log_viewer/logfile_viewer.html:32
 msgid "Log Files"
 msgstr "File log"
 
-#: templates/log_viewer/logfile_viewer.html:45
+#: templates/log_viewer/logfile_viewer.html:41
 msgid "No."
 msgstr "No."
 
-#: templates/log_viewer/logfile_viewer.html:46
+#: templates/log_viewer/logfile_viewer.html:42
 msgid "Log entries"
 msgstr "Entri log"
 
-#: templates/log_viewer/logfile_viewer.html:50
+#: templates/log_viewer/logfile_viewer.html:46
 msgid "No entries!"
 msgstr "Tidak ada entri!"
-
-#~ msgid "No anything to show !"
-#~ msgstr "Tidak ada sesuatu untuk ditampilkan !"

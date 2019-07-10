@@ -5,7 +5,7 @@
   <div class="breadcrumbs">
     <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
     &rsaquo;
-    <a href="{% url 'log_viewer:log_file_view' %}">{% trans 'Log Viewer' %}</a>
+    <a href="{% url 'log_viewer:log_file_view' %}">{% if custom_file_list_title %}{{ custom_file_list_title }}{% else %}{% trans 'Log Viewer' %}{% endif %}</a>
   </div>
 {% endblock %}
 
@@ -26,10 +26,6 @@
 
 {% block content %}
   <div class="django__log__viewer">
-    {% if custom_file_list_title %}
-      <b>{{ custom_file_list_title }}</b>
-    {% endif %}
-
     <div id="content-main">
       <div class="module filtered" id="changelist">
         <div id="changelist-filter">
@@ -57,7 +53,7 @@
   </div>
 
   <script>
-    function loadDataTableTrigger(table_name, url_json) {
+    function loadDataTable(table_name, url_json) {
       $(table_name).DataTable({
         pageLength: '{{ page_length }}',
         columns: [{data: 0}, {data: 1}],
@@ -70,7 +66,7 @@
                 var next_page = response.next_page || 1;
 
                 response.logs.forEach(function(text, numb, logs){
-                  new_logs.push([numb, text])
+                  new_logs.push([numb+1, text])
                 });
 
                 callback({
@@ -84,14 +80,14 @@
       });
     }
 
-    function loadDataTable(url_json) {
+    function loadDataTableTrigger(url_json) {
       var table_name ='table#log-entries';
       if (!$.fn.dataTable.isDataTable(table_name)) {
-        loadDataTableTrigger(table_name, url_json);
+        loadDataTable(table_name, url_json);
       }else {
         table_dt = $(table_name).DataTable();
         table_dt.destroy();
-        loadDataTableTrigger(table_name, url_json);
+        loadDataTable(table_name, url_json);
       }
     }
 
@@ -114,7 +110,9 @@
 
     $(document).on('click', '.btn-load-json-log', function(){
         // console.log(this);
-        loadDataTable($(this).data('href'));
+        $(this).closest('#log-files-list').find('li').removeClass('selected');
+        $(this).closest('li').addClass('selected');
+        loadDataTableTrigger($(this).data('href'));
     });
   </script>
 {% endblock%}
