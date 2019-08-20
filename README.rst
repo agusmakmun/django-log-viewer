@@ -64,8 +64,14 @@ Quick start
     logger.warning('My log')
     logger.error('My log')
 
+6. Deploy static files by running the command
 
-6. Start the development server and visit http://127.0.0.1:8000/admin/log_viewer/
+::
+
+    python manage.py collectstatic
+
+
+7. Start the development server and visit http://127.0.0.1:8000/admin/log_viewer/
 
 
 .. |pypi version| image:: https://img.shields.io/pypi/v/django-log-viewer.svg
