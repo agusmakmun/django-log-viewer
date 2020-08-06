@@ -4,6 +4,8 @@ from __future__ import unicode_literals
 import os
 from django.http import JsonResponse
 
+from log_viewer import settings
+
 
 def readlines_reverse(qfile, exclude=''):
     """
@@ -28,8 +30,8 @@ def readlines_reverse(qfile, exclude=''):
 
         # modified
         if next_char == '\n' and line:
-            # pattern = "; |\[INFO\] |\[DEBUG\] |\[WARNING\] |\[ERROR\] |\[CRITICAL\] "
-            patterns = [']OFNI[', ']GUBED[', ']GNINRAW[', ']RORRE[', ']LACITIRC[']
+            # support custom patterns (fixed issue #4)
+            patterns = settings.LOG_VIEWER_PATTERNS
 
             if any([line.endswith(p) for p in patterns]):
                 if exclude in line[::-1]:

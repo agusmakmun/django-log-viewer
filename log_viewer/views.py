@@ -8,6 +8,7 @@ from django.views.generic import TemplateView
 from django.contrib.auth.decorators import (login_required, user_passes_test)
 from django.contrib.admin.utils import (quote, unquote)
 from django.utils.decorators import method_decorator
+from django.utils.functional import SimpleLazyObject
 
 from log_viewer import settings
 from log_viewer.utils import (readlines_reverse, JSONResponseMixin)
@@ -20,8 +21,10 @@ class LogJsonView(JSONResponseMixin, TemplateView):
     def dispatch(self, *args, **kwargs):
         return super(LogJsonView, self).dispatch(*args, **kwargs)
 
-    def get_log_json(self, file_name=None, page=1):
+    def get_log_json(self, original_context={}):
         context = {}
+        page = original_context.get('page', 1)
+        file_name = original_context.get('file_name')
 
         # Clean the `file_name` to avoid relative paths.
         file_name = unquote(file_name).replace('/..', '').replace('..', '')
@@ -88,8 +91,13 @@ class LogJsonView(JSONResponseMixin, TemplateView):
         return context
 
     def render_to_response(self, context, **response_kwargs):
-        log_json = self.get_log_json(context.get('file_name'),
-                                     context.get('page', 1))
+
+        # to support Djang 3.1.* (fixed issue #6)
+        file_name = context.get('file_name')
+        if isinstance(file_name, SimpleLazyObject):
+            context = context['view'].kwargs
+
+        log_json = self.get_log_json(context)
 
         if 'file' in log_json:
             log_json['file'] = log_json['file'].name

@@ -1,5 +1,5 @@
 /*
-django-log-viwer 1.0.3
+django-log-viwer
 https://github.com/agusmakmun/django-log-viewer
 */
 
@@ -13,4 +13,14 @@ https://github.com/agusmakmun/django-log-viewer
 }
 .django__log__viewer .footer-action {
   margin: 1em 0
+}
+table#log-entries thead th {
+  padding: 10px 18px;
+  border-bottom: 1px solid #e1e1e1;
+}
+table#log-entries.no-footer {
+  border-bottom: 1px solid #e1e1e1;
+}
+#log-entries_length, #log-entries_length {
+  margin: .5em 0;
 }

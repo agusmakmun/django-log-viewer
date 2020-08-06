@@ -47,6 +47,7 @@ Quick start
     LOG_VIEWER_FILES_DIR = os.path.join(BASE_DIR, '../logs')
     LOG_VIEWER_MAX_READ_LINES = 1000  # total log lines will be read
     LOG_VIEWER_PAGE_LENGTH = 25       # total log lines per-page
+    LOG_VIEWER_PATTERNS = [']OFNI[', ']GUBED[', ']GNINRAW[', ']RORRE[', ']LACITIRC[']
 
     # Optionally you can set the next variables in order to customize the admin:
 
@@ -59,10 +60,10 @@ Quick start
 ::
 
     import logging
-    logger = logging.getLogger('my_handler')  # eg: log_viewer_demo/log_viewer_demo/logger.py
-    logger.info('My log')
-    logger.warning('My log')
-    logger.error('My log')
+    logger = logging.getLogger('LoggerName')
+    logger.info('The info message')
+    logger.warning('The warning message')
+    logger.error('The error message')
 
 6. Deploy static files by running the command
 

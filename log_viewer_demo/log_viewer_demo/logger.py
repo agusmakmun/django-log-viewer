@@ -27,14 +27,6 @@ LOGGING = {
             'backupCount': BACKUP_COUNT,
             'formatter': 'standard',
         },
-        'request_nicepay_handler': {
-            'level': 'DEBUG',
-            'class': 'logging.handlers.RotatingFileHandler',
-            'filename': 'logs/nicepay/%s.log' % DAY_NAME,
-            'maxBytes': MAXIMUM_FILE_LOGS,
-            'backupCount': BACKUP_COUNT,
-            'formatter': 'standard',
-        },
         'request_debug_handler': {
             'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
@@ -58,13 +50,12 @@ LOGGING = {
         },
     },
     'root': {
-        'handlers': ['default', 'request_nicepay_handler'],
+        'handlers': ['default'],
         'level': 'DEBUG'
     },
     'loggers': {
         'django.request': {
             'handlers': [
-                'request_nicepay_handler',
                 'request_debug_handler',
                 'request_error_handler',
                 'mail_admins_handler'

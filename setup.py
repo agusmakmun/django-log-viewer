@@ -3,7 +3,7 @@
 
 from setuptools import (setup, find_packages)
 
-__version__ = '1.0.6'
+__version__ = '1.0.7'
 
 setup(
     name='django-log-viewer',
@@ -25,6 +25,9 @@ setup(
         'Framework :: Django :: 1.9',
         'Framework :: Django :: 1.10',
         'Framework :: Django :: 1.11',
+        'Framework :: Django :: 2.0',
+        'Framework :: Django :: 3.0',
+        'Framework :: Django :: 3.1',
         'Intended Audience :: Developers',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
