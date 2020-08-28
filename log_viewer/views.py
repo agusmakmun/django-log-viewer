@@ -48,7 +48,7 @@ class LogJsonView(JSONResponseMixin, TemplateView):
             if len(settings.LOG_VIEWER_FILES) > 0:
                 tmp_names = list(filter(lambda x: x in settings.LOG_VIEWER_FILES, tmp_names))
             else:
-                tmp_names = [name for name in tmp_names if (name.split('.')[-1]) == 'log']
+                tmp_names = [name for name in tmp_names if 'log' in name.split('.')]
 
             file_names += tmp_names
             file_display += [('%s/%s' % (root[len_logs_dir:], name))[1:] for name in tmp_names]
