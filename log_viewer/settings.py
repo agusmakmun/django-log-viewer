@@ -6,6 +6,7 @@ import os
 from django.conf import settings
 
 LOG_VIEWER_FILES = getattr(settings, 'LOG_VIEWER_FILES', [])
+LOG_VIEWER_FILES_PATTERN = getattr(settings, 'LOG_VIEWER_FILES_PATTERN', '*.log*')
 LOG_VIEWER_FILES_DIR = getattr(settings, 'LOG_VIEWER_FILES_DIR', 'logs/')
 LOG_VIEWER_PAGE_LENGTH = getattr(settings, 'LOG_VIEWER_PAGE_LENGTH', 25)
 LOG_VIEWER_MAX_READ_LINES = getattr(settings, 'LOG_VIEWER_MAX_READ_LINES', 1000)
