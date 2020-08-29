@@ -55,7 +55,7 @@
   <script>
     function loadDataTable(table_name, url_json) {
       $(table_name).DataTable({
-        pageLength: '{{ page_length }}',
+        pageLength: {{ page_length }},
         columns: [{data: 0}, {data: 1}],
         ajax: function (data, callback, settings) {
           $.ajax({
