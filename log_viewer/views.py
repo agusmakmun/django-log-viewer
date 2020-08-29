@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 import os
+from fnmatch import fnmatch
 from itertools import islice
 from django.http import HttpResponse
 from django.views.generic import TemplateView
@@ -42,17 +43,16 @@ class LogJsonView(JSONResponseMixin, TemplateView):
         len_logs_dir = len(settings.LOG_VIEWER_FILES_DIR)
 
         for root, _, files in os.walk(settings.LOG_VIEWER_FILES_DIR):
-            tmp_names = list(filter(lambda x: x.find('~') == -1, files))
-            # if LOG_VIEWER_FILES is not set in settings
-            # then all the files with '.log' extension are listed
-            if len(settings.LOG_VIEWER_FILES) > 0:
-                tmp_names = list(filter(lambda x: x in settings.LOG_VIEWER_FILES, tmp_names))
-            else:
-                tmp_names = [name for name in tmp_names if (name.split('.')[-1]) == 'log']
+            all_files = list(filter(lambda x: x.find('~') == -1, files))
 
-            file_names += tmp_names
-            file_display += [('%s/%s' % (root[len_logs_dir:], name))[1:] for name in tmp_names]
-            file_urls += list(map(lambda x: '%s/%s' % (root, x), tmp_names))
+            log_files = []
+            log_files.extend(list(filter(lambda x: x in settings.LOG_VIEWER_FILES, all_files)))
+            log_files.extend([x for x in all_files if fnmatch(x, settings.LOG_VIEWER_FILES_PATTERN)])
+            log_files = list(set(log_files))
+
+            file_names.extend(log_files)
+            file_display.extend([('%s/%s' % (root[len_logs_dir:], name))[1:] for name in log_files])
+            file_urls.extend(list(map(lambda x: '%s/%s' % (root, x), log_files)))
 
         for i, element in enumerate(file_display):
             context['log_files'].append({
