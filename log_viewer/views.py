@@ -47,7 +47,8 @@ class LogJsonView(JSONResponseMixin, TemplateView):
 
             log_files = []
             log_files.extend(list(filter(lambda x: x in settings.LOG_VIEWER_FILES, all_files)))
-            log_files.extend([x for x in all_files if fnmatch(x, settings.LOG_VIEWER_FILES_PATTERN)])
+            log_files.extend([x for x in all_files if fnmatch(
+                x, settings.LOG_VIEWER_FILES_PATTERN)])
             log_files = list(set(log_files))
 
             file_names.extend(log_files)
@@ -92,7 +93,7 @@ class LogJsonView(JSONResponseMixin, TemplateView):
 
     def render_to_response(self, context, **response_kwargs):
 
-        # to support Djang 3.1.* (fixed issue #6)
+        # to support Django 3.1.* (fixed issue #6)
         file_name = context.get('file_name')
         if isinstance(file_name, SimpleLazyObject):
             context = context['view'].kwargs
