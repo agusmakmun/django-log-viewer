@@ -12,7 +12,7 @@ if django.VERSION >= (2, 0):
     urlpatterns = [
         re_path(r'^json/(?P<file_name>[\.\w-]*)/(?P<page>[0-9]+)$', log_json, name='log_json_view'),
         re_path(r'^json/(?P<file_name>[\.\w-]*)$', log_json, name='log_json_view'),
-        re_path(r'^download.zip/?$', log_download, name='log_download_view'),
+        re_path(r'^download.zip$', log_download, name='log_download_view'),
         re_path(r'^$', log_viewer, name='log_file_view'),
     ]
 else:
@@ -20,6 +20,6 @@ else:
     urlpatterns = [
         url(r'^json/(?P<file_name>[\.\w-]*)/(?P<page>[0-9]+)$', log_json, name='log_json_view'),
         url(r'^json/(?P<file_name>[\.\w-]*)$', log_json, name='log_json_view'),
-        url(r'^download.zip/?$', log_download, name='log_download_view'),
+        url(r'^download.zip$', log_download, name='log_download_view'),
         url(r'^$', log_viewer, name='log_file_view'),
     ]
