@@ -13,6 +13,7 @@ settings.configure(
             'ENGINE': 'django.db.backends.sqlite3',
         }
     },
+    LOGIN_URL='/admin/login/',
     MIDDLEWARE=[
         'django.middleware.security.SecurityMiddleware',
         'django.contrib.sessions.middleware.SessionMiddleware',

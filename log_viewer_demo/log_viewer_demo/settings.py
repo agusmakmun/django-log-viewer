@@ -1,4 +1,3 @@
-
 """
 Django settings for log_viewer_demo project.
 
@@ -12,28 +11,32 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 import os
+from pathlib import Path
 from log_viewer_demo.logger import LOGGING
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '8tjj-10%-%q^q1s^-#f4urf(n*%0jh-d-a81)#qo!j0@^om)%3'
+SECRET_KEY = 'j)s1pg_jhv22p(-38*r9d_@#sm+^k=+q29e0gis4ph(bioelc*'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 ALLOWED_HOSTS = ['*']
-LOGIN_REDIRECT_URL = '/admin'
+LOGIN_URL = '/admin/login/'
+LOGIN_REDIRECT_URL = '/'
 LOGGING = LOGGING
+
 
 # Django log viewer
 LOG_VIEWER_FILES_DIR = 'logs'
 LOG_VIEWER_PAGE_LENGTH = 25
 LOG_VIEWER_MAX_READ_LINES = 1000
+
 
 # Application definition
 
@@ -85,7 +88,7 @@ WSGI_APPLICATION = 'log_viewer_demo.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 

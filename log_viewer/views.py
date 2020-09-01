@@ -124,7 +124,7 @@ class LogDownloadView(TemplateView):
                 resp['Content-Disposition'] = 'attachment; filename=%s' % file_name
                 return resp
             else:
-                raise Http404()
+                raise Http404
 
         else:
             zip_filename = 'log_%s.zip' % localtime().strftime("%Y%m%dT%H%M%S")
