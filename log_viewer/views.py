@@ -15,10 +15,11 @@ from django.utils.functional import SimpleLazyObject
 from django.utils.timezone import localtime
 
 from log_viewer import settings
-from log_viewer.utils import (get_log_files, readlines_reverse, JSONResponseMixin, )
+from log_viewer.utils import (get_log_files, readlines_reverse, JSONResponseMixin)
 
 
 class TemplateView(_TemplateView):
+
     @method_decorator(login_required)
     @method_decorator(user_passes_test(lambda u: u.is_superuser))
     def dispatch(self, *args, **kwargs):
@@ -26,6 +27,7 @@ class TemplateView(_TemplateView):
 
 
 class LogJsonView(JSONResponseMixin, TemplateView):
+
     def get_log_json(self, original_context={}):
         context = {}
         page = original_context.get('page', 1)
@@ -102,8 +104,10 @@ class LogJsonView(JSONResponseMixin, TemplateView):
 
 
 class LogDownloadView(TemplateView):
+
     def render_to_response(self, context, **response_kwargs):
-        file_name = context.get('file_name', None)
+        # file_name = context.get('file_name', None)
+        file_name = self.request.GET.get('file_name', None)
         log_file_result = get_log_files(settings.LOG_VIEWER_FILES_DIR)
 
         if file_name:

@@ -5,7 +5,7 @@
   <div class="breadcrumbs">
     <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
     &rsaquo;
-    <a href="{% url 'log_viewer:log_file_view' %}">{% if custom_file_list_title %}{{ custom_file_list_title }}{% else %}{% trans 'Log Viewer' %}{% endif %}</a>
+    <a href="{% url 'log_viewer:log_file_view' %}">{% if custom_file_list_title %}{{ custom_file_list_title }}{% else %}{% trans "Django Log Viewer" %}{% endif %}</a>
   </div>
 {% endblock %}
 
@@ -35,6 +35,13 @@
         </div>
         <form id="changelist-form">
           <div class="results">
+            <div class="headers">
+              <h1 class="pull-left">{% if custom_file_list_title %}{{ custom_file_list_title }}{% else %}{% trans "Django Log Viewer" %}{% endif %}</h1>
+              <div class="download-buttons">
+                <a href="{% url 'log_viewer:log_download_zip_view' %}" class="btn-download pull-right">{% trans "Download all Log Files" %}</a>
+                <a href="{% url 'log_viewer:log_download_file_view' %}" class="btn-download pull-right btn-download-this-log" style="display:none">{% trans "Download this Log File" %}</a>
+              </div>
+            </div>
             <table id="log-entries" class="display" style="width:100%">
               <thead>
                 <tr>
@@ -101,6 +108,7 @@
                     // console.log(file_name);
                     // console.log(xtra);
                     var html = '<ul><li><a class="btn-load-json-log" href="javascript:;" '+
+                               'data-file-name="'+file_name+'" '+
                                'data-href="'+url_json+file_name+'">'+xtra.display+'</a></li></ul>'
                     $('div#log-files-list').append(html);
                 });
@@ -113,6 +121,19 @@
         $(this).closest('#log-files-list').find('li').removeClass('selected');
         $(this).closest('li').addClass('selected');
         loadDataTableTrigger($(this).data('href'));
+
+        let btnDownloadSingleFile = $('.btn-download-this-log');
+        let file_name = $(this).data('file-name');
+        var href = btnDownloadSingleFile.attr('href');
+
+        if(href.indexOf('file_name') > -1) {
+          href = href.replace(/\bfile_name=(.*)\b/, 'file_name=' + file_name)
+        }else {
+          href = href + '?file_name='+ file_name
+        }
+
+        btnDownloadSingleFile.attr('href', href);
+        btnDownloadSingleFile.show();
     });
   </script>
 {% endblock%}
