@@ -6,7 +6,7 @@ import zipfile
 from io import BytesIO
 from itertools import islice
 
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.views.generic import TemplateView as _TemplateView
 from django.contrib.auth.decorators import (login_required, user_passes_test)
 from django.contrib.admin.utils import (quote, unquote)
@@ -103,23 +103,37 @@ class LogJsonView(JSONResponseMixin, TemplateView):
 
 class LogDownloadView(TemplateView):
     def render_to_response(self, context, **response_kwargs):
-        zip_filename = f'log_{localtime().strftime("%Y%m%d%H%M")}.zip'
-        zip_buffer = BytesIO()
+        file_name = context.get('file_name', None)
 
-        log_file_result = get_log_files(settings.LOG_VIEWER_FILES_DIR)
-        with zipfile.ZipFile(zip_buffer, "a", zipfile.ZIP_DEFLATED, False) as zip_file:
-            for log_dir, log_files in log_file_result.items():
-                for log_file in log_files:
-                    display = os.path.join(log_dir, log_file)
-                    uri = os.path.join(settings.LOG_VIEWER_FILES_DIR, display)
+        if file_name:
+            uri = os.path.join(settings.LOG_VIEWER_FILES_DIR, unquote(file_name))
+            if os.path.isfile(uri):
+                with open(uri, 'rb') as f:
+                    buffer = f.read()
+                resp = HttpResponse(buffer, content_type='plain/text')
+                resp['Content-Disposition'] = f'attachment; filename={file_name}'
+                return resp
+            else:
+                raise Http404()
 
-                    with open(uri, 'r') as f:
-                        zip_file.writestr(f"{display}", f.read())
+        else:
+            zip_filename = f'log_{localtime().strftime("%Y%m%dT%H%M%S")}.zip'
+            zip_buffer = BytesIO()
 
-        zip_buffer.seek(0)
-        resp = HttpResponse(zip_buffer, content_type='application/zip')
-        resp['Content-Disposition'] = f'attachment; filename={zip_filename}'
-        return resp
+            log_file_result = get_log_files(settings.LOG_VIEWER_FILES_DIR)
+            with zipfile.ZipFile(zip_buffer, "a", zipfile.ZIP_DEFLATED, False) as zip_file:
+                for log_dir, log_files in log_file_result.items():
+                    for log_file in log_files:
+                        display = os.path.join(log_dir, log_file)
+                        uri = os.path.join(settings.LOG_VIEWER_FILES_DIR, display)
+
+                        with open(uri, 'r') as f:
+                            zip_file.writestr(f"{display}", f.read())
+
+            zip_buffer.seek(0)
+            resp = HttpResponse(zip_buffer, content_type='application/zip')
+            resp['Content-Disposition'] = f'attachment; filename={zip_filename}'
+            return resp
 
 
 class LogViewerView(TemplateView):
