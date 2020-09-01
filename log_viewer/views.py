@@ -2,36 +2,37 @@
 from __future__ import unicode_literals
 
 import os
-from fnmatch import fnmatch
+import zipfile
+from io import BytesIO
 from itertools import islice
-from django.http import HttpResponse
-from django.views.generic import TemplateView
+
+from django.http import HttpResponse, Http404
+from django.views.generic import TemplateView as _TemplateView
 from django.contrib.auth.decorators import (login_required, user_passes_test)
 from django.contrib.admin.utils import (quote, unquote)
 from django.utils.decorators import method_decorator
 from django.utils.functional import SimpleLazyObject
+from django.utils.timezone import localtime
 
 from log_viewer import settings
-from log_viewer.utils import (readlines_reverse, JSONResponseMixin)
+from log_viewer.utils import (get_log_files, readlines_reverse, JSONResponseMixin, )
 
 
-class LogJsonView(JSONResponseMixin, TemplateView):
-
+class TemplateView(_TemplateView):
     @method_decorator(login_required)
     @method_decorator(user_passes_test(lambda u: u.is_superuser))
     def dispatch(self, *args, **kwargs):
-        return super(LogJsonView, self).dispatch(*args, **kwargs)
+        return super(TemplateView, self).dispatch(*args, **kwargs)
 
+
+class LogJsonView(JSONResponseMixin, TemplateView):
     def get_log_json(self, original_context={}):
         context = {}
         page = original_context.get('page', 1)
-        file_name = original_context.get('file_name')
+        file_name = original_context.get('file_name', '')
 
         # Clean the `file_name` to avoid relative paths.
         file_name = unquote(file_name).replace('/..', '').replace('..', '')
-        file_urls = []
-        file_names = []
-        file_display = []
         page = int(page)
         current_file = file_name
 
@@ -40,28 +41,18 @@ class LogJsonView(JSONResponseMixin, TemplateView):
         context['next_page'] = page + 1
         context['log_files'] = []
 
-        len_logs_dir = len(settings.LOG_VIEWER_FILES_DIR)
+        log_file_data = get_log_files(settings.LOG_VIEWER_FILES_DIR)
+        for log_dir, log_files in log_file_data.items():
+            for log_file in log_files:
+                display = os.path.join(log_dir, log_file)
+                uri = os.path.join(settings.LOG_VIEWER_FILES_DIR, display)
 
-        for root, _, files in os.walk(settings.LOG_VIEWER_FILES_DIR):
-            all_files = list(filter(lambda x: x.find('~') == -1, files))
-
-            log_files = []
-            log_files.extend(list(filter(lambda x: x in settings.LOG_VIEWER_FILES, all_files)))
-            log_files.extend([x for x in all_files if fnmatch(
-                x, settings.LOG_VIEWER_FILES_PATTERN)])
-            log_files = list(set(log_files))
-
-            file_names.extend(log_files)
-            file_display.extend([('%s/%s' % (root[len_logs_dir:], name))[1:] for name in log_files])
-            file_urls.extend(list(map(lambda x: '%s/%s' % (root, x), log_files)))
-
-        for i, element in enumerate(file_display):
-            context['log_files'].append({
-                quote(element): {
-                    'uri': file_urls[i],
-                    'display': element,
-                }
-            })
+                context['log_files'].append({
+                    quote(display): {
+                        'uri': uri,
+                        'display': display,
+                    }
+                })
 
         if file_name:
             try:
@@ -110,6 +101,46 @@ class LogJsonView(JSONResponseMixin, TemplateView):
         return self.render_to_json_response(context, **response_kwargs)
 
 
+class LogDownloadView(TemplateView):
+    def render_to_response(self, context, **response_kwargs):
+        file_name = context.get('file_name', None)
+        log_file_result = get_log_files(settings.LOG_VIEWER_FILES_DIR)
+
+        if file_name:
+            file_path = unquote(file_name)
+            uri = os.path.join(settings.LOG_VIEWER_FILES_DIR, file_path)
+
+            log_dir = os.path.dirname(file_path)
+            log_file = os.path.basename(file_path)
+
+            if log_file in log_file_result.get(log_dir, []):
+                with open(uri, 'rb') as f:
+                    buffer = f.read()
+                resp = HttpResponse(buffer, content_type='plain/text')
+                resp['Content-Disposition'] = f'attachment; filename={file_name}'
+                return resp
+            else:
+                raise Http404()
+
+        else:
+            zip_filename = f'log_{localtime().strftime("%Y%m%dT%H%M%S")}.zip'
+            zip_buffer = BytesIO()
+
+            with zipfile.ZipFile(zip_buffer, "a", zipfile.ZIP_DEFLATED, False) as zip_file:
+                for log_dir, log_files in log_file_result.items():
+                    for log_file in log_files:
+                        display = os.path.join(log_dir, log_file)
+                        uri = os.path.join(settings.LOG_VIEWER_FILES_DIR, display)
+
+                        with open(uri, 'r') as f:
+                            zip_file.writestr(f"{display}", f.read())
+
+            zip_buffer.seek(0)
+            resp = HttpResponse(zip_buffer, content_type='application/zip')
+            resp['Content-Disposition'] = f'attachment; filename={zip_filename}'
+            return resp
+
+
 class LogViewerView(TemplateView):
     """
     LogViewerView class
@@ -118,11 +149,6 @@ class LogViewerView(TemplateView):
 
     """
     template_name = "log_viewer/logfile_viewer.html"
-
-    @method_decorator(login_required)
-    @method_decorator(user_passes_test(lambda u: u.is_superuser))
-    def dispatch(self, *args, **kwargs):
-        return super(LogViewerView, self).dispatch(*args, **kwargs)
 
     def get_context_data(self, file_name=None, page=1, **kwargs):
         """
@@ -140,3 +166,4 @@ class LogViewerView(TemplateView):
 
 log_json = LogJsonView.as_view()
 log_viewer = LogViewerView.as_view()
+log_download = LogDownloadView.as_view()
