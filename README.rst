@@ -4,12 +4,12 @@ Django Log Viewer
 
 |pypi version| |license| |build status|
 
-Django Log Viewer allows you to read log files in the admin page by using ``DataTables``.
+Django Log Viewer allows you to read & download log files in the admin page by using ``DataTables``.
 This project was modified from: https://bitbucket.org/inkalabsinc/django-log-viewer
 
 -----------------
 
-.. image:: https://i.imgur.com/2BFzilV.png
+.. image:: https://i.imgur.com/IZQKm4T.png
 
 
 Quick start
