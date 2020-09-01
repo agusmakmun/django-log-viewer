@@ -121,27 +121,27 @@ class LogDownloadView(TemplateView):
                 with open(uri, 'rb') as f:
                     buffer = f.read()
                 resp = HttpResponse(buffer, content_type='plain/text')
-                resp['Content-Disposition'] = f'attachment; filename={file_name}'
+                resp['Content-Disposition'] = 'attachment; filename=%s' % file_name
                 return resp
             else:
                 raise Http404()
 
         else:
-            zip_filename = f'log_{localtime().strftime("%Y%m%dT%H%M%S")}.zip'
+            zip_filename = 'log_%s.zip' % localtime().strftime("%Y%m%dT%H%M%S")
             zip_buffer = BytesIO()
 
-            with zipfile.ZipFile(zip_buffer, "a", zipfile.ZIP_DEFLATED, False) as zip_file:
+            with zipfile.ZipFile(zip_buffer, 'a', zipfile.ZIP_DEFLATED, False) as zip_file:
                 for log_dir, log_files in log_file_result.items():
                     for log_file in log_files:
                         display = os.path.join(log_dir, log_file)
                         uri = os.path.join(settings.LOG_VIEWER_FILES_DIR, display)
 
                         with open(uri, 'r') as f:
-                            zip_file.writestr(f"{display}", f.read())
+                            zip_file.writestr('%s' % display, f.read())
 
             zip_buffer.seek(0)
             resp = HttpResponse(zip_buffer, content_type='application/zip')
-            resp['Content-Disposition'] = f'attachment; filename={zip_filename}'
+            resp['Content-Disposition'] = 'attachment; filename=%s' % zip_filename
             return resp
 
 
