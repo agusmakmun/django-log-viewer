@@ -104,10 +104,16 @@ class LogJsonView(JSONResponseMixin, TemplateView):
 class LogDownloadView(TemplateView):
     def render_to_response(self, context, **response_kwargs):
         file_name = context.get('file_name', None)
+        log_file_result = get_log_files(settings.LOG_VIEWER_FILES_DIR)
 
         if file_name:
-            uri = os.path.join(settings.LOG_VIEWER_FILES_DIR, unquote(file_name))
-            if os.path.isfile(uri):
+            file_path = unquote(file_name)
+            uri = os.path.join(settings.LOG_VIEWER_FILES_DIR, file_path)
+
+            log_dir = os.path.dirname(file_path)
+            log_file = os.path.basename(file_path)
+
+            if log_file in log_file_result.get(log_dir, []):
                 with open(uri, 'rb') as f:
                     buffer = f.read()
                 resp = HttpResponse(buffer, content_type='plain/text')
@@ -120,7 +126,6 @@ class LogDownloadView(TemplateView):
             zip_filename = f'log_{localtime().strftime("%Y%m%dT%H%M%S")}.zip'
             zip_buffer = BytesIO()
 
-            log_file_result = get_log_files(settings.LOG_VIEWER_FILES_DIR)
             with zipfile.ZipFile(zip_buffer, "a", zipfile.ZIP_DEFLATED, False) as zip_file:
                 for log_dir, log_files in log_file_result.items():
                     for log_file in log_files:
