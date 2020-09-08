@@ -12,8 +12,8 @@ from django.contrib.auth.decorators import (login_required, user_passes_test)
 from django.contrib.admin.utils import (quote, unquote)
 from django.utils.decorators import method_decorator
 from django.utils.functional import SimpleLazyObject
-from django.utils.timezone import localtime
-
+from django.utils.timezone import localtime, now
+from django.conf import settings as django_settings
 from log_viewer import settings
 from log_viewer.utils import (get_log_files, readlines_reverse, JSONResponseMixin)
 
@@ -127,7 +127,8 @@ class LogDownloadView(TemplateView):
                 raise Http404
 
         else:
-            zip_filename = 'log_%s.zip' % localtime().strftime("%Y%m%dT%H%M%S")
+            generation_time = localtime() if django_settings.USE_TZ else now()
+            zip_filename = 'log_%s.zip' % generation_time.strftime("%Y%m%dT%H%M%S")
             zip_buffer = BytesIO()
 
             with zipfile.ZipFile(zip_buffer, 'a', zipfile.ZIP_DEFLATED, False) as zip_file:
