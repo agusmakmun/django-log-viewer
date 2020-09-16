@@ -39,7 +39,7 @@ Quick start
     path('admin/log_viewer/', include('log_viewer.urls')),
 
 
-4. In your settings file create the following value
+4. In your ``settings.py`` file create the following value
 
 ::
 
