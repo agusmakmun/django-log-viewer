@@ -60,6 +60,22 @@
   </div>
 
   <script>
+    var entityMap = {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;',
+      '/': '&#x2F;',
+      '`': '&#x60;',
+      '=': '&#x3D;'
+    };
+    function escapeHtml (string) {
+      return String(string).replace(/[&<>"'`=\/]/g, function fromEntityMap (s) {
+        return entityMap[s];
+      });
+    }
+
     function loadDataTable(table_name, url_json) {
       $(table_name).DataTable({
         pageLength: {{ page_length }},
@@ -73,7 +89,8 @@
                 var next_page = response.next_page || 1;
 
                 response.logs.forEach(function(text, numb, logs){
-                  new_logs.push([numb+1, text])
+                  text = escapeHtml(text);
+                  new_logs.push([numb+1, text]);
                 });
 
                 callback({
