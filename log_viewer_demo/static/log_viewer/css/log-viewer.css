@@ -23,6 +23,7 @@ https://github.com/agusmakmun/django-log-viewer
 .django__log__viewer .btn-download {
   color: #fff;
   margin: .5em;
+  margin-top: 0;
   font-size: 13px;
   text-align: center;
   padding: 8px 12px;

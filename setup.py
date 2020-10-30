@@ -3,7 +3,7 @@
 
 from setuptools import (setup, find_packages)
 
-__version__ = '1.1.1'
+__version__ = '1.1.2'
 
 setup(
     name='django-log-viewer',
@@ -33,7 +33,10 @@ setup(
         'Programming Language :: Python',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
         'Development Status :: 5 - Production/Stable',
         'Topic :: Software Development :: Libraries :: Python Modules',
         'License :: OSI Approved :: MIT License',
