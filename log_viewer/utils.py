@@ -29,9 +29,14 @@ def readlines_reverse(qfile, exclude=''):
     """
     Read file lines from bottom to top
     """
+    # support custom patterns (fixed issue #4)
+    patterns = settings.LOG_VIEWER_PATTERNS
+    reversed_patterns = [x[::-1] for x in patterns]
+
     qfile.seek(0, os.SEEK_END)
     position = qfile.tell()
     line = ''
+
     while position >= 0:
         qfile.seek(position)
         next_char = qfile.read(1)
@@ -48,10 +53,7 @@ def readlines_reverse(qfile, exclude=''):
 
         # modified
         if next_char == '\n' and line:
-            # support custom patterns (fixed issue #4)
-            patterns = settings.LOG_VIEWER_PATTERNS
-
-            if any([line.endswith(p) for p in patterns]):
+            if any([line.endswith(p) for p in reversed_patterns]):
                 if exclude in line[::-1]:
                     line = ''
                 else:

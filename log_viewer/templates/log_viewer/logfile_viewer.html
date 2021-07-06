@@ -1,5 +1,6 @@
 {% extends "admin/base_site.html" %}
 {% load static i18n %}
+{% block title %}{% trans "Django Log Viewer" %} - {{ block.super }}{% endblock %}
 
 {% block breadcrumbs %}
   <div class="breadcrumbs">
@@ -25,15 +26,10 @@
 {% endblock %}
 
 {% block content %}
-  <div class="django__log__viewer">
+  <div class="django__log__viewer ">
     <div id="content-main">
       <div class="module filtered" id="changelist">
-        <div id="changelist-filter">
-          <h2>{% trans 'Log Files' %}</h2>
-          <div id="log-files-list">
-          </div>
-        </div>
-        <form id="changelist-form">
+        <form id="changelist-form" class="changelist-form-container">
           <div class="results">
             <div class="headers">
               <h1 class="pull-left">{% if custom_file_list_title %}{{ custom_file_list_title }}{% else %}{% trans "Django Log Viewer" %}{% endif %}</h1>
@@ -55,6 +51,11 @@
             </table>
           </div>
         </form>
+        <div id="changelist-filter">
+          <h2>{% trans 'Log Files' %}</h2>
+          <div id="log-files-list">
+          </div>
+        </div>
       </div>
     </div>
   </div>

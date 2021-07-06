@@ -6,6 +6,7 @@ from django.conf import settings
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 settings.configure(
+    SECRET_KEY='xxxxx',
     DEBUG=True,
     DATABASES={
         'default': {

@@ -36,7 +36,7 @@ Quick start
 
 ::
 
-    path('admin/log_viewer/', include('log_viewer.urls')),
+    path('logs/', include('log_viewer.urls')),
 
 
 4. In your ``settings.py`` file create the following value
@@ -48,7 +48,7 @@ Quick start
     LOG_VIEWER_FILES_DIR = os.path.join(BASE_DIR, '../logs')
     LOG_VIEWER_MAX_READ_LINES = 1000  # total log lines will be read
     LOG_VIEWER_PAGE_LENGTH = 25       # total log lines per-page
-    LOG_VIEWER_PATTERNS = [']OFNI[', ']GUBED[', ']GNINRAW[', ']RORRE[', ']LACITIRC[']
+    LOG_VIEWER_PATTERNS = ['[INFO]', '[DEBUG]', '[WARNING]', '[ERROR]', '[CRITICAL]']
 
     # Optionally you can set the next variables in order to customize the admin:
 
@@ -73,7 +73,7 @@ Quick start
     python manage.py collectstatic
 
 
-7. Start the development server and visit http://127.0.0.1:8000/admin/log_viewer/
+7. Start the development server and visit http://127.0.0.1:8000/logs/
 
 
 .. |pypi version| image:: https://img.shields.io/pypi/v/django-log-viewer.svg
