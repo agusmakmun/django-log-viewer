@@ -44,14 +44,13 @@ Quick start
 ::
 
     LOG_VIEWER_FILES = ['logfile1', 'logfile2', ...]
-    LOG_VIEWER_FILES_PATTERN = 'logfile*'
-    LOG_VIEWER_FILES_DIR = os.path.join(BASE_DIR, '../logs')
-    LOG_VIEWER_MAX_READ_LINES = 1000  # total log lines will be read
+    LOG_VIEWER_FILES_PATTERN = '*.log*'
+    LOG_VIEWER_FILES_DIR = 'logs/'
     LOG_VIEWER_PAGE_LENGTH = 25       # total log lines per-page
+    LOG_VIEWER_MAX_READ_LINES = 1000  # total log lines will be read
     LOG_VIEWER_PATTERNS = ['[INFO]', '[DEBUG]', '[WARNING]', '[ERROR]', '[CRITICAL]']
 
     # Optionally you can set the next variables in order to customize the admin:
-
     LOG_VIEWER_FILE_LIST_TITLE = "Custom title"
     LOG_VIEWER_FILE_LIST_STYLES = "/static/css/my-custom.css"
 
@@ -82,7 +81,7 @@ Quick start
 .. |license| image:: https://img.shields.io/badge/license-MIT-green.svg
    :target: https://raw.githubusercontent.com/agusmakmun/django-log-viewer/master/LICENSE
 
-.. |build status| image:: https://travis-ci.org/agusmakmun/django-log-viewer.svg?branch=master
-   :target: https://travis-ci.org/agusmakmun/django-log-viewer
+.. |build status| image:: https://img.shields.io/travis/com/agusmakmun/django-log-viewer
+   :target: https://www.travis-ci.com/github/agusmakmun/django-log-viewer
 
 .. _`PyPI`: https://pypi.python.org/pypi/django-log-viewer
