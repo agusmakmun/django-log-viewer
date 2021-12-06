@@ -22,6 +22,7 @@
 {% endblock %}
 
 {% block extrahead %}
+  {{ block.super }}
   <script src="{% static 'log_viewer/js/jquery.min.js' %}"></script>
   <script src="{% static 'log_viewer/js/jquery.dataTables.min.js' %}"></script>
 {% endblock %}
