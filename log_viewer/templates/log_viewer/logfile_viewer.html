@@ -11,6 +11,7 @@
 {% endblock %}
 
 {% block extrastyle %}
+  {{ block.super }}
   <link rel="stylesheet" type="text/css" href="{% static 'admin/css/changelists.css' %}">
   <link rel="stylesheet" type="text/css" href="{% static 'log_viewer/css/jquery.dataTables.min.css' %}">
   <link rel="stylesheet" type="text/css" href="{% static 'log_viewer/css/log-viewer.css' %}">
@@ -21,6 +22,7 @@
 {% endblock %}
 
 {% block extrahead %}
+  {{ block.super }}
   <script src="{% static 'log_viewer/js/jquery.min.js' %}"></script>
   <script src="{% static 'log_viewer/js/jquery.dataTables.min.js' %}"></script>
 {% endblock %}
