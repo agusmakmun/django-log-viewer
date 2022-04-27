@@ -6,3 +6,5 @@ dist/
 *.pyc
 *.log
 *backup*
+/venv/
+/.idea/

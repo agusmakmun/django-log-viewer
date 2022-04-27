@@ -55,8 +55,13 @@
         </form>
         <div id="changelist-filter">
           <h2>{% trans 'Log Files' %}</h2>
-          <div id="log-files-list">
-          </div>
+{#          <div id="log-files-list">#}
+{#          </div>#}
+            <table id="log-files-list" class="display" style="width:100%">
+              <tbody>
+                <tr><td colspan="2">{% trans 'No entries!' %}</td></tr>
+              </tbody>
+            </table>
         </div>
       </div>
     </div>
@@ -81,7 +86,7 @@
 
     function loadDataTable(table_name, url_json) {
       $(table_name).DataTable({
-        pageLength: {{ page_length }},
+        pageLength: {{ files_per_page }},
         columns: [{data: 0}, {data: 1}],
         ajax: function (data, callback, settings) {
           $.ajax({
@@ -91,9 +96,46 @@
                 const new_logs = [];
                 var next_page = response.next_page || 1;
 
-                response.logs.forEach(function(text, numb, logs){
-                  text = escapeHtml(text);
-                  new_logs.push([numb+1, text]);
+                try {
+                    response.logs.forEach(function(text, numb, logs){
+                      text = escapeHtml(text);
+                      new_logs.push([numb+1, text]);
+                    });
+                } catch {
+                    console.warn("This log file doesn't exist");
+                }
+
+
+                callback({
+                  data: new_logs,
+                  recordsTotal: next_page,
+                  recordsFiltered: next_page
+                });
+            }
+          });
+        }
+      });
+    }
+
+    function loadDataTableFiles(table_name, url_json) {
+      $(table_name).DataTable({
+        pageLength: {{ files_per_page }},
+        columns: [{data: 1}],
+        ajax: function (data, callback, settings) {
+          $.ajax({
+            type: 'get',
+            url: url_json,
+            success:function(response){
+                const new_logs = [];
+                let next_page = response.next_page_files || 1;
+                response.log_files.forEach(function(logs, numb){
+                    const keys = Object.keys(logs);
+                    Object.entries(logs).forEach(([file_name, xtra]) => {
+                        logs = '<a class="btn-load-json-log" href="javascript:;" '+
+                                   'data-file-name="'+file_name+'" '+
+                                   'data-href="'+url_json+file_name+'">'+xtra.display+'</a>'
+                    });
+                    new_logs.push([numb+1, logs]);
                 });
 
                 callback({
@@ -121,19 +163,11 @@
     $(document).ready(function() {
         // just blank entry to get the `log_files`
         var url_json = "{% url 'log_viewer:log_json_view' xxxxx %}";
-        $.getJSON(url_json, function(result){
-            result.log_files.forEach(function(log) {
-                const keys = Object.keys(log);
-                Object.entries(log).forEach(([file_name, xtra]) => {
-                    // console.log(file_name);
-                    // console.log(xtra);
-                    var html = '<ul><li><a class="btn-load-json-log" href="javascript:;" '+
-                               'data-file-name="'+file_name+'" '+
-                               'data-href="'+url_json+file_name+'">'+xtra.display+'</a></li></ul>'
-                    $('div#log-files-list').append(html);
-                });
-            });
-        });
+        var table_name ='table#log-files-list';
+        loadDataTableFiles(table_name, url_json);
+        let params = new URLSearchParams(window.location.search);
+        loadDataTableTrigger(params.get("file"))
+
     });
 
     $(document).on('click', '.btn-load-json-log', function(){
