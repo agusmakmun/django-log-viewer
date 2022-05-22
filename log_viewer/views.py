@@ -43,8 +43,11 @@ class LogJsonView(JSONResponseMixin, TemplateView):
         context['next_page'] = page + 1
         context['log_files'] = []
 
-        log_file_data = get_log_files(settings.LOG_VIEWER_FILES_DIR)
-        for log_dir, log_files in log_file_data.items():
+        log_file_data = get_log_files(settings.LOG_VIEWER_FILES_DIR, settings.LOG_VIEWER_FILE_LIST_MAX_ITEMS_PER_PAGE, 1)
+        context['next_page_files'] = log_file_data["next_page_files"]
+        context['last_files'] = log_file_data["last_files"]
+
+        for log_dir, log_files in log_file_data["logs"].items():
             for log_file in log_files:
                 display = os.path.join(log_dir, log_file)
                 uri = os.path.join(settings.LOG_VIEWER_FILES_DIR, display)
@@ -108,7 +111,8 @@ class LogDownloadView(TemplateView):
     def render_to_response(self, context, **response_kwargs):
         # file_name = context.get('file_name', None)
         file_name = self.request.GET.get('file_name', None)
-        log_file_result = get_log_files(settings.LOG_VIEWER_FILES_DIR)
+        log_file_result = get_log_files(settings.LOG_VIEWER_FILES_DIR,
+                                        settings.LOG_VIEWER_FILE_LIST_MAX_ITEMS_PER_PAGE, 1)["logs"]
 
         if file_name:
             file_path = unquote(file_name)
@@ -166,6 +170,7 @@ class LogViewerView(TemplateView):
         context['custom_file_list_title'] = settings.LOG_VIEWER_FILE_LIST_TITLE
         context['custom_style_file'] = settings.LOG_VIEWER_FILE_LIST_STYLES
         context['page_length'] = settings.LOG_VIEWER_PAGE_LENGTH
+        context['files_per_page'] = settings.LOG_VIEWER_FILE_LIST_MAX_ITEMS_PER_PAGE
         return context
 
 

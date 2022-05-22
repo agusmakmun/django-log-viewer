@@ -8,20 +8,24 @@ from django.http import JsonResponse
 from log_viewer import settings
 
 
-def get_log_files(directory):
+def get_log_files(directory, max_items_per_page, curr_page):
     result = {}
     for root, _, files in os.walk(directory):
         all_files = list(filter(lambda x: x.find('~') == -1, files))
 
-        log_files = []
-        log_files.extend(list(filter(lambda x: x in settings.LOG_VIEWER_FILES, all_files)))
-        log_files.extend([x for x in all_files if fnmatch(x, settings.LOG_VIEWER_FILES_PATTERN)])
-
+        all_log_files = []
+        all_log_files.extend(list(filter(lambda x: x in settings.LOG_VIEWER_FILES, all_files)))
+        all_log_files.extend([x for x in all_files if fnmatch(x, settings.LOG_VIEWER_FILES_PATTERN)])
         log_dir = os.path.relpath(root, directory)
         if log_dir == '.':
             log_dir = ''
 
-        result[log_dir] = list(set(log_files))
+        result["logs"] = {
+            log_dir: list(set(all_log_files))
+        }
+        result["next_page_files"] = curr_page + 1
+        result["last_files"] = all_log_files.__len__() <= curr_page * max_items_per_page
+
     return result
 
 

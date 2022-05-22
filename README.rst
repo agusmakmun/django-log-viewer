@@ -9,7 +9,7 @@ This project was modified from: https://bitbucket.org/inkalabsinc/django-log-vie
 
 -----------------
 
-.. image:: https://i.imgur.com/IZQKm4T.png
+.. image:: https://i.imgur.com/kqxzIpX.png
 
 
 Quick start
@@ -48,6 +48,7 @@ Quick start
     LOG_VIEWER_FILES_DIR = 'logs/'
     LOG_VIEWER_PAGE_LENGTH = 25       # total log lines per-page
     LOG_VIEWER_MAX_READ_LINES = 1000  # total log lines will be read
+    LOG_VIEWER_FILE_LIST_MAX_ITEMS_PER_PAGE = 25 # Max log files loaded in Datatable per page
     LOG_VIEWER_PATTERNS = ['[INFO]', '[DEBUG]', '[WARNING]', '[ERROR]', '[CRITICAL]']
 
     # Optionally you can set the next variables in order to customize the admin:

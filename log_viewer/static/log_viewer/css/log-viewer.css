@@ -46,3 +46,31 @@ table#log-entries.no-footer {
 #log-entries_length, #log-entries_length {
   margin: .5em 0;
 }
+#log-files-list_length {
+  width: 100%;
+  text-align: center;
+  float: none;
+}
+#log-files-list_filter {
+  float: none;
+  text-align: center;
+  padding: 0.5em 0.2em;
+}
+#log-files-list td {
+  font-size: 1em;
+  padding: 1em;
+}
+#log-files-list_info {
+  float: none;
+  text-align: center;
+  width: 100%;
+}
+#log-files-list_paginate {
+  float: none;
+  text-align: center;
+  margin-top: 1em;
+  width: 100%;
+}
+#log-files-list_paginate .paginate_button {
+  display: inline-block;
+}
