@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-07-06 21:39+0700\n"
+"POT-Creation-Date: 2022-08-26 21:45+0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,7 +20,7 @@ msgstr ""
 
 #: templates/log_viewer/logfile_viewer.html:3
 #: templates/log_viewer/logfile_viewer.html:9
-#: templates/log_viewer/logfile_viewer.html:35
+#: templates/log_viewer/logfile_viewer.html:37
 msgid "Django Log Viewer"
 msgstr ""
 
@@ -28,26 +28,27 @@ msgstr ""
 msgid "Home"
 msgstr ""
 
-#: templates/log_viewer/logfile_viewer.html:37
+#: templates/log_viewer/logfile_viewer.html:39
 msgid "Download all Log Files"
 msgstr ""
 
-#: templates/log_viewer/logfile_viewer.html:38
+#: templates/log_viewer/logfile_viewer.html:40
 msgid "Download this Log File"
 msgstr ""
 
-#: templates/log_viewer/logfile_viewer.html:44
+#: templates/log_viewer/logfile_viewer.html:46
 msgid "No."
 msgstr ""
 
-#: templates/log_viewer/logfile_viewer.html:45
+#: templates/log_viewer/logfile_viewer.html:47
 msgid "Log entries"
 msgstr ""
 
-#: templates/log_viewer/logfile_viewer.html:49
+#: templates/log_viewer/logfile_viewer.html:51
+#: templates/log_viewer/logfile_viewer.html:62
 msgid "No entries!"
 msgstr ""
 
-#: templates/log_viewer/logfile_viewer.html:55
+#: templates/log_viewer/logfile_viewer.html:57
 msgid "Log Files"
 msgstr ""
