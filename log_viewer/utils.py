@@ -28,10 +28,10 @@ def get_log_files(directory, max_items_per_page, current_page):
     >>>
     """
     result = {}
+    all_log_files = []
     for root, _, files in os.walk(directory):
         all_files = list(filter(lambda x: x.find("~") == -1, files))
 
-        all_log_files = []
         all_log_files.extend(
             list(filter(lambda x: x in settings.LOG_VIEWER_FILES, all_files))
         )
