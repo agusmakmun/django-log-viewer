@@ -83,7 +83,7 @@ Quick start
 .. |license| image:: https://img.shields.io/badge/license-MIT-green.svg
    :target: https://raw.githubusercontent.com/agusmakmun/django-log-viewer/master/LICENSE
 
-.. |build status| image:: https://img.shields.io/github/workflow/status/agusmakmun/django-log-viewer/Run%20tests
+.. |build status| image:: https://img.shields.io/github/actions/workflow/status/agusmakmun/django-log-viewer/run-tests.yml?branch=master
    :target: https://github.com/agusmakmun/django-log-viewer/actions/workflows/run-tests.yml
 
 .. _`PyPI`: https://pypi.python.org/pypi/django-log-viewer
