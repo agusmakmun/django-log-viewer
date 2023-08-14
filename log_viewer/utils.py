@@ -91,8 +91,12 @@ def readlines_reverse(qfile, exclude=None):
                     line = ""
         else:
             line += next_char
-        char_len = len(next_char.encode())
-        position -= char_len or 1
+
+        char_length = len(next_char.encode())
+        if char_length > 1 and len(line) > 3 and len(set(line[-4:-1])) == 1:
+            line = line[:-3] + next_char
+        position -= char_length or 1
+
     yield line[::-1]
 
 
