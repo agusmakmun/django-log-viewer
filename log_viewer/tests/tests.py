@@ -1,3 +1,4 @@
+import os
 import types
 import tempfile
 from itertools import islice
@@ -36,14 +37,24 @@ class TestLogsViewer(TestCase):
         self.assertTemplateUsed(response, "log_viewer/logfile_viewer.html")
 
     def test_get_log_files(self):
-        with tempfile.TemporaryDirectory() as log_dir:
-            open("%s/default.log" % log_dir, "a").close()
-            result = get_log_files(log_dir, 1, 1)
+        with tempfile.TemporaryDirectory() as parent_level_log_dir, \
+                tempfile.TemporaryDirectory(dir=parent_level_log_dir) as child_one_log_dir, \
+                tempfile.TemporaryDirectory(dir=parent_level_log_dir) as child_two_log_dir:
+            open("%s/default.log" % parent_level_log_dir, "a").close()
+            open("%s/a.log" % child_one_log_dir, "a").close()
+            open("%s/b.log" % child_two_log_dir, "a").close()
+
+            child_one_relative_path = os.path.relpath(child_one_log_dir, parent_level_log_dir)
+            child_two_relative_path = os.path.relpath(child_two_log_dir, parent_level_log_dir)
+
+            result = get_log_files(parent_level_log_dir, 2, 1)
             self.assertEqual(
                 result,
                 {
                     "logs": {
                         "": ["default.log"],
+                        child_one_relative_path: ["a.log"],
+                        child_two_relative_path: ["b.log"],
                     },
                     "next_page_files": 2,
                     "last_files": True,
